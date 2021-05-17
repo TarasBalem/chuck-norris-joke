@@ -1,0 +1,75 @@
+.main {
+  padding: 0 140px;
+
+  &__title {
+    h2 {
+      font-size: 32px;
+    }
+
+    h3 {
+      font-size: 24px;
+    }
+  }
+
+  &__control {
+    input {
+      margin: 10px 10px 0 0;
+    }
+
+    .categories-list {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0;
+
+      .categories-item {
+        padding: 6px 15px;
+        margin-right: 10px;
+        margin-top: 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #ababab;
+        border: 2px solid #f8f8f8;
+        box-sizing: border-box;
+        border-radius: 6px;
+        cursor: pointer;
+
+        &:hover {
+          color: #333333;
+          background-color: #f8f8f8;
+        }
+      }
+    }
+
+    .input-text {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #333333;
+      box-sizing: border-box;
+      border-radius: 10px;
+      outline: none;
+    }
+  }
+
+  &__btn {
+    font-size: 16px;
+    background: linear-gradient(90.55deg, #8ea7ff 0%, #7291ff 100%);
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    padding: 10px 40px;
+    margin-top: 10px;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      background: linear-gradient(90.55deg, #426afc 0%, #2d5afd 100%);
+    }
+
+    &:active {
+      transform: translateY(2px);
+    }
+  }
+}
