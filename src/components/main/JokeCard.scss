@@ -59,9 +59,9 @@
     right: 40px;
     cursor: pointer;
 
-    .active {
+    &.active {
       path {
-        fill: #ff6767;
+        fill: #ff6767 !important;
       }
     }
   }

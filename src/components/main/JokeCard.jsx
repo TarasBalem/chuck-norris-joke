@@ -1,7 +1,14 @@
-import React from "react";
+import React, {useContext} from "react";
+import PropTypes from "prop-types";
+import JokeContext from "../../contexts/JokeContext";
 import "./JokeCard.scss";
 
 const JokeCard = ({joke}) => {
+  const {id, url, value, updated_at, categories, favorite} = joke;
+  const {handleFavorite} = useContext(JokeContext);
+
+  const favoriteClass = favorite ? "active" : "";
+
   return (
     <div className="joke-card">
       <div className="joke-card__icon">
@@ -27,17 +34,22 @@ const JokeCard = ({joke}) => {
       <div className="joke-card__content">
         <div className="identifier">
           ID:
-          <a href={joke.url} className="id">
-            {joke.id}
+          <a href={url} target="_blank" className="id" rel="noreferrer">
+            {id}
           </a>
         </div>
-        <div className="text">{joke.value}</div>
+        <div className="text">{value}</div>
         <div className="info">
-          <div className="time">{joke.updated_at}</div>
-          <div className="category">categories</div>
+          <div className="time">{updated_at}</div>
+          {categories.length > 0 && (
+            <div className="category">{categories[0]}</div>
+          )}
         </div>
       </div>
-      <div className="joke-card__like">
+      <div
+        className={`joke-card__like ${favoriteClass}`}
+        onClick={() => handleFavorite(id)}
+      >
         <svg
           width="20"
           height="17"
@@ -57,6 +69,14 @@ const JokeCard = ({joke}) => {
       </div>
     </div>
   );
+};
+
+JokeCard.propTypes = {
+  joke: PropTypes.object.isRequired,
+};
+
+JokeCard.defaultProps = {
+  joke: {},
 };
 
 export default JokeCard;
