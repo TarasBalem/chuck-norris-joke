@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import "./App.scss";
 import axios from "axios";
 import JokeContext from "./contexts/JokeContext";
-import JokesList from "./components/main/JokesList";
+import JokesList from "./components/JokesList";
 
 const URL = "https://api.chucknorris.io/jokes";
 
@@ -12,6 +12,7 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [textSearch, setTextSearch] = useState("");
   const [getJokeWith, setGetJokeWith] = useState("random");
+  const [favoritesList, setFavoritesList] = useState();
 
   useEffect(() => {
     axios
@@ -55,6 +56,10 @@ const App = () => {
       jokes.map((f) => (f.id === id ? {...f, favorite: !f.favorite} : f))
     );
   };
+
+  useEffect(() => {
+    setFavoritesList(jokes.filter((joke) => joke.favorite === true));
+  }, [jokes]);
 
   return (
     <div className="app">
@@ -131,7 +136,7 @@ const App = () => {
         </div>
         <div className="favorite">
           <h2>Favorites</h2>
-          <JokesList jokes={jokes.filter((joke) => joke.favorite === true)} />
+          <JokesList jokes={favoritesList} />
         </div>
       </JokeContext.Provider>
     </div>

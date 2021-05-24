@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import PropTypes from "prop-types";
-import JokeContext from "../../contexts/JokeContext";
+import JokeContext from "../contexts/JokeContext";
 import "./JokeCard.scss";
 
 const JokeCard = ({joke}) => {
