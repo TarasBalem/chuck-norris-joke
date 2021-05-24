@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import "./App.scss";
 import axios from "axios";
 import JokeContext from "./contexts/JokeContext";
@@ -12,7 +12,7 @@ const App = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [textSearch, setTextSearch] = useState("");
   const [getJokeWith, setGetJokeWith] = useState("random");
-  const [favoritesList, setFavoritesList] = useState();
+  const [favoritesList, setFavoritesList] = useState([]);
 
   useEffect(() => {
     axios
@@ -61,9 +61,21 @@ const App = () => {
     setFavoritesList(jokes.filter((joke) => joke.favorite === true));
   }, [jokes]);
 
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favoritesList));
+  }, [favoritesList]);
+
+  useEffect(() => {
+    if (localStorage.favorites) {
+      setFavoritesList(JSON.parse(localStorage.favorites));
+    }
+  }, []);
+
+  const value = useMemo(() => ({handleFavorite}), []);
+
   return (
     <div className="app">
-      <JokeContext.Provider value={{handleFavorite}}>
+      <JokeContext.Provider value={value}>
         <div className="main">
           <div className="main__title">
             <h2>Hey!</h2>

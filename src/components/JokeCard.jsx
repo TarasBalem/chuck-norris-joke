@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, memo} from "react";
 import PropTypes from "prop-types";
 import JokeContext from "../contexts/JokeContext";
 import "./JokeCard.scss";
@@ -79,4 +79,4 @@ JokeCard.defaultProps = {
   joke: {},
 };
 
-export default JokeCard;
+export default memo(JokeCard);
