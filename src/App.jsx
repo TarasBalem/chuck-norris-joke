@@ -8,11 +8,18 @@ const URL = "https://api.chucknorris.io/jokes";
 
 const App = () => {
   const [jokes, setJokes] = useState([]);
+  const [jokesArr, setJokesArr] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [textSearch, setTextSearch] = useState("");
   const [getJokeWith, setGetJokeWith] = useState("random");
   const [favoritesList, setFavoritesList] = useState([]);
+
+  useEffect(() => {
+    if (localStorage.favorites) {
+      setJokesArr(JSON.parse(localStorage.favorites));
+    }
+  }, []);
 
   useEffect(() => {
     axios
@@ -24,20 +31,33 @@ const App = () => {
     if (getJokeWith === "categories") {
       axios
         .get(`${URL}/random?category=${selectedCategory}`)
-        .then((response) => setJokes([{favorite: false, ...response.data}]));
+        .then((response) => {
+          setJokes([{favorite: false, ...response.data}]);
+          setJokesArr((prevState) => [
+            {favorite: false, ...response.data},
+            ...prevState,
+          ]);
+        });
     } else if (getJokeWith === "search") {
       axios
         .get(`${URL}/search?query=${textSearch}`)
         .then((response) => response.data.result)
         .then((data) => {
-          data = data.map((d) => ({favorite: false, ...d}));
           return data;
         })
-        .then((jokes) => setJokes(jokes));
+        .then((jokes) => {
+          setJokes(jokes);
+          setJokesArr((prevState) => prevState.concat(jokes));
+        });
     } else {
-      axios
-        .get(`${URL}/random`)
-        .then((response) => setJokes([{favorite: false, ...response.data}]));
+      axios.get(`${URL}/random`).then((response) => {
+        console.log(response);
+        setJokes([{favorite: false, ...response.data}]);
+        setJokesArr((prevState) => [
+          {favorite: false, ...response.data},
+          ...prevState,
+        ]);
+      });
     }
   };
 
@@ -51,25 +71,22 @@ const App = () => {
 
   const handleChangeTextSearch = ({target}) => setTextSearch(target.value);
 
-  const handleFavorite = (id) => {
+  const handleFavorite = (joke) => {
     setJokes((jokes) =>
-      jokes.map((f) => (f.id === id ? {...f, favorite: !f.favorite} : f))
+      jokes.map((f) => (f.id === joke.id ? {...f, favorite: !f.favorite} : f))
+    );
+    setJokesArr((jokes) =>
+      jokes.map((f) => (f.id === joke.id ? {...f, favorite: !f.favorite} : f))
     );
   };
 
   useEffect(() => {
-    setFavoritesList(jokes.filter((joke) => joke.favorite === true));
-  }, [jokes]);
-
-  useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favoritesList));
-  }, [favoritesList]);
-
-  useEffect(() => {
-    if (localStorage.favorites) {
-      setFavoritesList(JSON.parse(localStorage.favorites));
-    }
-  }, []);
+    setFavoritesList(jokesArr.filter((joke) => joke.favorite === true));
+    localStorage.setItem(
+      "favorites",
+      JSON.stringify(jokesArr.filter((joke) => joke.favorite === true))
+    );
+  }, [jokesArr]);
 
   const value = useMemo(() => ({handleFavorite}), []);
 

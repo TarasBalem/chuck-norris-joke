@@ -48,7 +48,7 @@ const JokeCard = ({joke}) => {
       </div>
       <div
         className={`joke-card__like ${favoriteClass}`}
-        onClick={() => handleFavorite(id)}
+        onClick={() => handleFavorite(joke)}
       >
         <svg
           width="20"
