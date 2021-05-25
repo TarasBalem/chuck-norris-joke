@@ -3,6 +3,8 @@ import "./App.scss";
 import axios from "axios";
 import JokeContext from "./contexts/JokeContext";
 import JokesList from "./components/JokesList";
+import ErrorMessage from "./components/ErrorMessage";
+import Spinner from "./components/Spinner";
 
 const URL = "https://api.chucknorris.io/jokes";
 
@@ -14,6 +16,8 @@ const App = () => {
   const [textSearch, setTextSearch] = useState("");
   const [getJokeWith, setGetJokeWith] = useState("random");
   const [favoritesList, setFavoritesList] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (localStorage.favorites) {
@@ -28,6 +32,7 @@ const App = () => {
   }, []);
 
   const fetchJoke = () => {
+    setLoading(true);
     if (getJokeWith === "categories") {
       axios
         .get(`${URL}/random?category=${selectedCategory}`)
@@ -37,7 +42,9 @@ const App = () => {
             {favorite: false, ...response.data},
             ...prevState,
           ]);
-        });
+        })
+        .catch((err) => setError(err.message))
+        .finally(() => setLoading(false));
     } else if (getJokeWith === "search") {
       axios
         .get(`${URL}/search?query=${textSearch}`)
@@ -48,16 +55,22 @@ const App = () => {
         .then((jokes) => {
           setJokes(jokes);
           setJokesArr((prevState) => prevState.concat(jokes));
-        });
+        })
+        .catch((err) => setError(err.message))
+        .finally(() => setLoading(false));
     } else {
-      axios.get(`${URL}/random`).then((response) => {
-        console.log(response);
-        setJokes([{favorite: false, ...response.data}]);
-        setJokesArr((prevState) => [
-          {favorite: false, ...response.data},
-          ...prevState,
-        ]);
-      });
+      axios
+        .get(`${URL}/random`)
+        .then((response) => {
+          console.log(response);
+          setJokes([{favorite: false, ...response.data}]);
+          setJokesArr((prevState) => [
+            {favorite: false, ...response.data},
+            ...prevState,
+          ]);
+        })
+        .catch((err) => setError(err.message))
+        .finally(() => setLoading(false));
     }
   };
 
@@ -161,7 +174,8 @@ const App = () => {
           <button className="main__btn" onClick={fetchJoke}>
             Get a joke
           </button>
-          <JokesList jokes={jokes} />
+          {loading ? <Spinner /> : <JokesList jokes={jokes} />}
+          {error && <ErrorMessage error={error} />}
         </div>
         <div className="favorite">
           <h2>Favorites</h2>
